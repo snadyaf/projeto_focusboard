@@ -26,10 +26,10 @@
 /* --- TEMA: DARK (padrão) --- */
 :root,
 [data-theme="dark"] {
-  --bg-base:        #0d1117;
-  --bg-surface:     #161b22;
-  --bg-elevated:    #1c2230;
-  --bg-hover:       #21262d;
+  --bg-base:        #060707;
+  --bg-surface:     #0d1014;
+  --bg-elevated:    #0f131b;
+  --bg-hover:       #121519;
   --bg-input:       #0d1117;
 
   --border:         #30363d;
