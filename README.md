@@ -455,6 +455,58 @@ O resultado visual deve ser semelhante a um SaaS moderno pronto para produção.
 
 ---
 
+# Ajustes do Projeto (Versão deve ser publicada no dia 15/06/2026)
+
+## Tela de Login
+
+* Implementar funcionalidade de criação de usuários.
+* Aplicar persistência de dados utilizando `localStorage`.
+
+## Dashboard
+
+* Atualizar os indicadores e informações do dashboard com base nos dados da tela de Tarefas.
+* Aplicar persistência de dados utilizando `localStorage`.
+
+## Tela de Tarefas
+
+* Ajustar a funcionalidade de filtros.
+* Aplicar persistência de dados utilizando `localStorage`.
+* Corrigir e otimizar o campo de pesquisa.
+* Aplicar formatação de texto tachado para tarefas movidas para a raia **"Concluído"**.
+
+### Barra de Progresso
+
+* Ajustar a contabilização e exibição da quantidade de tarefas ao mover itens para a raia **"Concluído"**.
+
+## Menu Lateral
+
+* Incluir opção para ocultar/exibir o menu.
+* Ajustar a funcionalidade da opção **"Sair"**.
+
+---
+
+# Implementações Futuras (Não Urgentes)
+
+## Perfil do Usuário
+
+Adicionar uma nova tela de perfil contendo as seguintes funcionalidades:
+
+* Editar avatar.
+* Editar nome.
+* Editar biografia.
+* Editar cargo.
+* Visualizar informações do perfil do usuário.
+
+## Gerenciamento de Perfis de Usuário
+
+* Criar diferentes perfis de usuário.
+* Disponibilizar a seção **"Perfis de Usuário"** no menu apenas para usuários com perfil **ADMIN**.
+* Permitir que usuários ADMIN:
+
+  * Visualizem os perfis cadastrados.
+  * Alterem informações dos perfis de usuários.
+
+
 # OBSERVAÇÃO PARA OS DESENVOLVEDORES
 
 Esta versão é exclusivamente visual.

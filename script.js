@@ -1,311 +1,386 @@
-//lógica de login - Snádya 
+
+//login 
+
+const usuarios = [
+  {
+    email: "miguel@email.com",
+    senha: "123456",
+  },
+  {
+    email: "snadya@email.com",
+    senha: "123456",
+  },
+  {
+    email: "sid@email.com",
+    senha: "123456",
+  },
+  {
+    email: "junior@email.com",
+    senha: "123456",
+  },
+];
 
 function validarLogin() {
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value.trim();
 
-  const emailCorreto = "teste@email.com";
-  const senhaCorreta = "123456";
+  const usuarioEncontrado = usuarios.find((usuario) => usuario.email === email &&  usuario.senha === senha);
 
-  if (email === emailCorreto && senha === senhaCorreta) {
+  if (usuarioEncontrado) {
+    
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuarioEncontrado));
 
-    document.getElementById("login-screen").remove();
-
-    const app = document.getElementById("app");
-
-    app.classList.remove("hidden");
-    app.style.display = "flex";
-
+    mostrarApp();
   } else {
     alert("Email ou senha inválidos.");
   }
-} 
-
-//lógica das opções - Snádya 
-
-function navegarPara(secao) {
-
-      document.querySelectorAll(".section").forEach(section => {
-      section.classList.remove("active");
-      section.hidden = true;
-    }); 
-
-      const destino = document.getElementById(`section-${secao}`);
-
-        destino.hidden = false;
-        destino.classList.add("active");
 }
 
-//lógica do pomodoro - Snádya
+function mostrarApp() {
+  const loginScreen = document.getElementById("login-screen");
+  const app = document.getElementById("app");
+
+  if (loginScreen) {
+    loginScreen.style.display = "none";
+  }
+
+  if (app) {
+    app.classList.remove("hidden");
+    app.style.display = "flex";
+  }
+}
+
+function fazerLogout() {
+  localStorage.removeItem("usuarioLogado");
+
+  document.getElementById("app").style.display = "none";
+
+  document.getElementById("login-screen").style.display = "flex";
+
+  document.getElementById("email").value = "";
+  document.getElementById("senha").value = "";
+}
+
+function verificarLogin() {
+  const usuarioLogado = localStorage.getItem("usuarioLogado");
+
+  if (usuarioLogado) {
+    mostrarApp();
+  }
+}
+
+
+// ======================================
+// NAVEGAÇÃO
+// ======================================
+
+function navegarPara(secao) {
+  document.querySelectorAll(".section").forEach((section) => {
+    section.classList.remove("active");
+    section.hidden = true;
+  });
+
+  const destino = document.getElementById(`section-${secao}`);
+
+  if (destino) {
+    destino.hidden = false;
+    destino.classList.add("active");
+  }
+}
+
+// ======================================
+// POMODORO
+// ======================================
 
 let tempo = 25 * 60;
+
 let contagemTempo = null;
+
 let modoAtual = "foco";
 
 const tempos = {
-    foco: 25 * 60,
-    pausa: 5 * 60,
-    pausaLonga: 15 * 60
+  foco: 1500,
+  pausa: 300,
+  pausaLonga: 900,
 };
 
 function atualizarDisplay() {
+  const minutos = Math.floor(tempo / 60);
 
-    const minutos = Math.floor(tempo / 60);
-    const segundos = tempo % 60;
+  const segundos = tempo % 60;
 
-    document.getElementById("timer-display").textContent = `${minutos.toString().padStart(2, "0")}:${segundos.toString().padStart(2, "0")}`;
+  document.getElementById("timer-display").textContent = `${String(
+    minutos
+  ).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
 }
 
 function iniciarPomodoro() {
+  if (contagemTempo) return;
 
-    if (contagemTempo) return;
+  contagemTempo = setInterval(() => {
+    tempo--;
 
-    contagemTempo = setInterval(() => {
+    atualizarDisplay();
 
-        tempo--;
+    if (tempo <= 0) {
+      clearInterval(contagemTempo);
 
-        atualizarDisplay();
-
-        if (tempo <= 0) {
-
-            clearInterval(contagemTempo);
-            contagemTempo = null;
-
-            tempo = 0;
-            atualizarDisplay();
-            
-        }
-
-    }, 1000);
+      contagemTempo = null;
+    }
+  }, 1000);
 }
 
 function pausarPomodoro() {
+  clearInterval(contagemTempo);
 
-    clearInterval(contagemTempo);
-    contagemTempo = null;
-
+  contagemTempo = null;
 }
 
 function reiniciarPomodoro() {
+  pausarPomodoro();
 
-    clearInterval(contagemTempo);
-    contagemTempo = null;
+  tempo = tempos[modoAtual];
 
-    tempo = tempos[modoAtual];
-
-    atualizarDisplay();
-
+  atualizarDisplay();
 }
 
 function selecionarModoPomodoro(modo) {
+  modoAtual = modo;
 
-    modoAtual = modo;
+  pausarPomodoro();
 
-    clearInterval(contagemTempo);
-    contagemTempo = null;
+  tempo = tempos[modo];
 
-    document.querySelectorAll(".mode-btn").forEach(botao => {
-        botao.classList.remove("active");
-    });
+  atualizarDisplay();
 
-    document.querySelector(`[data-mode="${modo}"]`).classList.add("active");
+  document
+    .querySelectorAll(".mode-btn")
+    .forEach((btn) => btn.classList.remove("active"));
 
-    tempo = tempos[modo];
+  const botao = document.querySelector(`[data-mode="${modo}"]`);
 
-    atualizarDisplay();
-
-    document.getElementById("timer-mode-label").textContent = modo === "foco"  ? "FOCO" : modo === "pausa" ? "PAUSA" : "PAUSA LONGA";
+  if (botao) botao.classList.add("active");
 }
 
-atualizarDisplay();
+// ======================================
+// TAREFAS
+// ======================================
 
-//lógica da barra de progresso - Junior
+const tarefas = [];
 
-function atualizarProgresso() {
-    // Todas as tarefas
-    const totalTarefas = document.querySelectorAll('.card').length;
-
-    // Apenas tarefas concluídas
-    const tarefasConcluidas = document.querySelectorAll(
-        '.card[data-status="concluido"]'
-    ).length;
-
-    // Evita divisão por zero
-    const percentual = totalTarefas > 0
-        ? Math.round((tarefasConcluidas / totalTarefas) * 100)
-        : 0;
-
-    // Atualiza barra
-    const progressFill = document.getElementById('progress-fill');
-    progressFill.style.width = `${percentual}%`;
-
-    // Atualiza texto
-    document.getElementById('progress-label').textContent =
-        `${percentual}%`;
-
-    document.querySelector('.progress-hint').textContent =
-        `${tarefasConcluidas} de ${totalTarefas} tarefas concluídas`;
-
-    // Atualiza atributos de acessibilidade
-    const progressBar = document.querySelector('.progress-bar');
-    progressBar.setAttribute('aria-valuenow', percentual);
-    progressBar.setAttribute(
-        'aria-label',
-        `${percentual}% das tarefas concluídas`
-    );
+function abrirModalNovaTarefa() {
+  document.getElementById("modal-tarefa").classList.remove("hidden");
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    atualizarProgresso();
-});
-
-function soltarTarefa(event, novoStatus) {
-    event.preventDefault();
-
-    const tarefaId = event.dataTransfer.getData("text");
-    const card = document.querySelector(`[data-id="${tarefaId}"]`);
-
-    if (card) {
-        document.getElementById(`col-${novoStatus}`).appendChild(card);
-
-        // Atualiza status
-        card.dataset.status = novoStatus;
-
-        atualizarProgresso();
-    }
+function fecharModalNovaTarefa() {
+  document.getElementById("modal-tarefa").classList.add("hidden");
 }
 
-function atualizarContadores() {
-    document.getElementById('count-afazer').textContent =
-        document.querySelectorAll('.card[data-status="afazer"]').length;
-
-    document.getElementById('count-fazendo').textContent =
-        document.querySelectorAll('.card[data-status="fazendo"]').length;
-
-    document.getElementById('count-concluido').textContent =
-        document.querySelectorAll('.card[data-status="concluido"]').length;
-}
-
-atualizarContadores();
-atualizarProgresso();
-
-//lógica de adicionar tarefas - Sid
-
-function abrirModalNovaTarefa(){
-  const modal = document.getElementById('modal-tarefa');
-
-  modal.classList.remove('hidden');
-}
-
-/* array para adicinar as tarefas */
-const tarefas = []
-
-//Salvando os valores de cada campo 
-function salvarTarefa(){
-  const titulo = document.getElementById('modal-tarefa-titulo').value
-  const descricao = document.getElementById('modal-tarefa-desc').value
-  const data = document.getElementById('modal-tarefa-data').value
-  const status = document.getElementById('modal-tarefa-status').value
-  const tag = document.getElementById('modal-tarefa-tag').value
-
+function salvarTarefa() {
   const tarefa = {
-    titulo: titulo, 
-    descricao: descricao, 
-    data: data, 
-    status: status, 
-    tag: tag
-  }
+    id: Date.now(),
 
-  tarefas.push(tarefa)
-  renderizarTarefa(tarefa)
+    titulo: document.getElementById("modal-tarefa-titulo").value,
 
+    descricao: document.getElementById("modal-tarefa-desc").value,
 
-  // limpando os campos do modal depois de salvar
-  document.getElementById('modal-tarefa-titulo').value = ''
-  document.getElementById('modal-tarefa-desc').value = ''
-  document.getElementById('modal-tarefa-data').value = ''
-  document.getElementById('modal-tarefa-status').value = ''
-  document.getElementById('modal-tarefa-tag').value = ''
+    data: document.getElementById("modal-tarefa-data").value,
 
-  const modal = document.getElementById('modal-tarefa');
-  modal.classList.add('hidden');
+    status: document.getElementById("modal-tarefa-status").value,
+
+    tag: document.getElementById("modal-tarefa-tag").value,
+  };
+
+  tarefas.push(tarefa);
+
+  renderizarTarefa(tarefa);
+
+  atualizarContadores();
+
+  atualizarProgresso();
+
+  limparFormulario();
+
+  fecharModalNovaTarefa();
+}
+
+function limparFormulario() {
+  [
+    "modal-tarefa-titulo",
+    "modal-tarefa-desc",
+    "modal-tarefa-data",
+    "modal-tarefa-status",
+    "modal-tarefa-tag",
+  ].forEach((id) => {
+    document.getElementById(id).value = "";
+  });
 }
 
 function renderizarTarefa(tarefa) {
-  const novaDiv = document.createElement('div')
-  novaDiv.innerHTML = `
+  const card = document.createElement("article");
 
-  <article
-  class="card"
-  draggable="true"
-  data-id="1"
-  data-status="afazer"
-  ondragstart="arrastarTarefa(event)"
-  aria-label="Tarefa: Criar wireframes do projeto"
-  >
+  card.className = "card";
 
-  <div class="card-header">
-  <span class="card-tag tag-design">${tarefa.tag}</span>
-  <div class="card-actions">
-  <button class="card-btn" onclick="editarTarefa(1)" aria-label="Editar tarefa">✎</button>
-  <button class="card-btn card-btn-danger" onclick="removerTarefa(1)" aria-label="Remover tarefa">✕</button>
-  </div>
-  </div>
+  card.draggable = true;
 
-  <h3 class="card-title">${tarefa.titulo}</h3>
-  <p class="card-desc">${tarefa.descricao}</p>
-  <div class="card-footer">
-  <span class="card-date">
-  <span aria-hidden="true">📅</span>
-  <time datetime="2026-06-05">${tarefa.data}</time>
-  </span>
-  </div>
-  </article>
-  `
+  card.dataset.id = tarefa.id;
 
-  if(tarefa.status === 'afazer'){
-    const afazer = document.getElementById('col-afazer')
-    afazer.appendChild(novaDiv)
-  }
-  else if(tarefa.status === 'fazendo'){
-    const fazendo = document.getElementById('col-fazendo')
-    fazendo.appendChild(novaDiv)
-  }
-  else{
-    const concluido = document.getElementById('col-concluido')
-    concluido.appendChild(novaDiv)
+  card.dataset.status = tarefa.status;
+
+  card.innerHTML = `
+<div class="card-header">
+
+<span class="card-tag">
+${tarefa.tag}
+</span>
+
+<div class="card-actions">
+
+<button
+class="card-btn"
+onclick="editarTarefa(${tarefa.id})">
+
+✎
+
+</button>
+
+<button
+class="card-btn card-btn-danger"
+onclick="removerTarefa(${tarefa.id})">
+
+✕
+
+</button>
+
+</div>
+
+</div>
+
+<h3 class="card-title">
+${tarefa.titulo}
+</h3>
+
+<p class="card-desc">
+${tarefa.descricao}
+</p>
+
+<div class="card-footer">
+
+<time>
+${tarefa.data}
+</time>
+
+</div>
+`;
+
+  card.addEventListener("dragstart", arrastarTarefa);
+
+  document.getElementById(`col-${tarefa.status}`).appendChild(card);
+}
+
+function removerTarefa(id) {
+  const card = document.querySelector(`[data-id="${id}"]`);
+
+  if (card) {
+    card.remove();
+
+    atualizarContadores();
+
+    atualizarProgresso();
   }
 }
 
-//lógica de troca de tema (claro/escuro/xp) - Miguel
+function editarTarefa(id) {
+  alert(`Editar tarefa ${id}`);
+}
+
+function arrastarTarefa(event) {
+  event.dataTransfer.setData("text", event.target.dataset.id);
+}
+
+function soltarTarefa(event, novoStatus) {
+  event.preventDefault();
+
+  const id = event.dataTransfer.getData("text");
+
+  const card = document.querySelector(`[data-id="${id}"]`);
+
+  if (card) {
+    card.dataset.status = novoStatus;
+
+    document.getElementById(`col-${novoStatus}`).appendChild(card);
+
+    atualizarContadores();
+
+    atualizarProgresso();
+  }
+}
+
+function permitirDrop(event) {
+  event.preventDefault();
+}
+
+// ======================================
+// PROGRESSO
+// ======================================
+
+function atualizarContadores() {
+  ["afazer", "fazendo", "concluido"].forEach((status) => {
+    document.getElementById(`count-${status}`).textContent =
+      document.querySelectorAll(`.card[data-status="${status}"]`).length;
+  });
+}
+
+function atualizarProgresso() {
+  const total = document.querySelectorAll(".card").length;
+
+  const concluidas = document.querySelectorAll(
+    '.card[data-status="concluido"]'
+  ).length;
+
+  const percentual = total ? Math.round((concluidas / total) * 100) : 0;
+
+  document.getElementById("progress-fill").style.width = `${percentual}%`;
+
+  document.getElementById("progress-label").textContent = `${percentual}%`;
+}
+
+// ======================================
+// TEMA
+// ======================================
 
 function trocarTema(tema) {
-    // Aplica o tema no elemento <html> — o CSS já reage via [data-theme="..."]
-    document.documentElement.setAttribute("data-theme", tema);
+  document.documentElement.setAttribute("data-theme", tema);
 
-    // Salva a preferência para lembrar na próxima visita
-    localStorage.setItem("tema", tema);
+  localStorage.setItem("tema", tema);
 
-    // Marca visualmente o botão ativo no seletor de tema
-    document.querySelectorAll(".theme-btn").forEach(botao => {
-        botao.classList.remove("active");
-    });
+  document
+    .querySelectorAll(".theme-btn")
+    .forEach((btn) => btn.classList.remove("active"));
 
-    const botaoAtivo = document.querySelector(`.theme-btn[data-theme="${tema}"]`);
-    if (botaoAtivo) botaoAtivo.classList.add("active");
+  const ativo = document.querySelector(`[data-theme="${tema}"]`);
+
+  if (ativo) ativo.classList.add("active");
 }
 
-// Alterna rapidamente entre claro e escuro (útil para um botão único)
 function alternarTema() {
-    const temaAtual = document.documentElement.getAttribute("data-theme") || "dark";
-    const novoTema = temaAtual === "dark" ? "light" : "dark";
-    trocarTema(novoTema);
+  const atual = document.documentElement.getAttribute("data-theme");
+
+  trocarTema(atual === "dark" ? "light" : "dark");
 }
 
-// Aplica o tema salvo assim que a página carrega
+// ======================================
+// INICIALIZAÇÃO
+// ======================================
+
 document.addEventListener("DOMContentLoaded", () => {
-    const temaSalvo = localStorage.getItem("tema") || "dark";
-    trocarTema(temaSalvo);
+  verificarLogin();
+
+  atualizarDisplay();
+
+  atualizarContadores();
+
+  atualizarProgresso();
+
+  trocarTema(localStorage.getItem("tema") || "dark");
 });
-
-
