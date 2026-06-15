@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FocusBoard — Organize seu dia</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js"></script>
 </head>
 <body>
 
@@ -75,7 +74,7 @@
       <!-- Perfil do usuário -->
       <div class="sidebar-profile">
         <div class="avatar" aria-hidden="true">AM</div>
-        <div class="profile-info">
+        <div class="profile-info sidebar-text">
           <span class="profile-name">Ana Martins</span>
           <span class="profile-role">Desenvolvedora Full Stack</span>
         </div>
@@ -99,7 +98,7 @@
               aria-current="page"
             >
               <span class="nav-icon" aria-hidden="true">▦</span>
-              <span>Tarefas</span>
+              <span class="sidebar-text">Tarefas</span>
             </button>
           </li>
           <li role="none">
@@ -110,7 +109,7 @@
               onclick="navegarPara('anotacoes')"
             >
               <span class="nav-icon" aria-hidden="true">✎</span>
-              <span>Anotações</span>
+              <span class="sidebar-text">Anotações</span>
             </button>
           </li>
           <li role="none">
@@ -121,7 +120,7 @@
               onclick="navegarPara('pomodoro')"
             >
               <span class="nav-icon" aria-hidden="true">◷</span>
-              <span>Pomodoro</span>
+              <span class="sidebar-text">Pomodoro</span>
             </button>
           </li>
           <li role="none">
@@ -132,7 +131,7 @@
               onclick="navegarPara('dashboard')"
             >
               <span class="nav-icon" aria-hidden="true">◈</span>
-              <span>Dashboard</span>
+              <span class="sidebar-text">Dashboard</span>
             </button>
           </li>
         </ul>
@@ -147,7 +146,7 @@
              - Atualizar botão ativo
         -->
         <div class="theme-selector" aria-label="Selecionar tema">
-          <span class="theme-label">Tema</span>
+          <span class="theme-label sidebar-text">Tema</span>
           <div class="theme-buttons">
             <button
               class="theme-btn active"
@@ -179,8 +178,8 @@
              - Exibir login-screen
              - Limpar dados de sessão se necessário
         -->
-        <button class="btn-logout" onclick="fazerLogout()" aria-label="Sair da conta">
-          <span aria-hidden="true">⎋</span> Sair
+        <button class="btn-logout" onclick="fazerLogout()" aria-label="Sair da conta">⏻
+          <span class="sidebar-text">Sair</span>
         </button>
       </div>
 
@@ -202,19 +201,27 @@
 
       <!-- Topbar -->
       <header class="topbar">
+
+        <!-- Botão menu -->
         <button
           id="menu-toggle"
           class="menu-toggle"
-          onclick="abrirSidebar()"
-          aria-label="Abrir menu"
-          aria-expanded="false"
-        >
-          <span></span><span></span><span></span>
+          onclick="alternarSidebar()"
+          aria-label="Ocultar menu"
+          >
+          ☰
         </button>
-        <div class="topbar-title" id="topbar-title">Tarefas</div>
-        <div class="topbar-actions">
-          <span class="topbar-date" id="topbar-date">Qua, 3 Jun 2026</span>
+
+        <div class="topbar-title" id="topbar-title">
+          Tarefas
         </div>
+
+        <div class="topbar-actions">
+          <span class="topbar-date" id="topbar-date">
+            Qua, 3 Jun 2026
+          </span>
+        </div>
+
       </header>
 
       <!-- ======================================================
@@ -250,8 +257,8 @@
           <select
             id="filtro-status"
             class="select-filter"
-            onchange="filtrarPorStatus(this.value)"
             aria-label="Filtrar por status"
+            onchange="filtrarTarefas()"
           >
             <option value="todos">Todos os status</option>
             <option value="afazer">A Fazer</option>
@@ -300,22 +307,22 @@
                 data-status="afazer"
                 ondragstart="arrastarTarefa(event)"
                 aria-label="Tarefa: Criar wireframes do projeto"
-              >
+                >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-design">Design</span> -->
+                  <span class="card-tag tag-design">Design</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(1)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(1)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Criar wireframes do projeto</h3>
+                <h3 class="card-title">Criar wireframes do projeto</h3>
                 <p class="card-desc">Esboçar as telas principais antes de iniciar o desenvolvimento.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">📅</span>
                     <time datetime="2026-06-05">05 Jun 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
 
               <article
@@ -327,20 +334,20 @@
                 aria-label="Tarefa: Revisar documentação da API"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-backend">Backend</span> -->
+                  <span class="card-tag tag-backend">Backend</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(2)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(2)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Revisar documentação da API</h3>
+                <h3 class="card-title">Revisar documentação da API</h3>
                 <p class="card-desc">Atualizar endpoints de autenticação e adicionar exemplos de resposta.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">📅</span>
                     <time datetime="2026-06-07">07 Jun 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
 
               <article
@@ -352,20 +359,20 @@
                 aria-label="Tarefa: Configurar CI/CD pipeline"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-devops">DevOps</span> -->
+                  <span class="card-tag tag-devops">DevOps</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(3)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(3)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Configurar CI/CD pipeline</h3>
+                <h3 class="card-title">Configurar CI/CD pipeline</h3>
                 <p class="card-desc">Integrar GitHub Actions com deploy automático no servidor de staging.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">📅</span>
                     <time datetime="2026-06-10">10 Jun 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
             </div>
 
@@ -386,7 +393,7 @@
             <div class="col-header">
               <span class="col-dot dot-doing" aria-hidden="true"></span>
               <h2 class="col-title">Fazendo</h2>
-              <span class="col-count" id="count-fazendo">0</span>
+              <span class="col-count" id="count-fazendo">2</span>
             </div>
 
             <div class="cards-container" id="col-fazendo">
@@ -399,20 +406,20 @@
                 aria-label="Tarefa: Implementar autenticação JWT"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-backend">Backend</span> -->
+                  <span class="card-tag tag-backend">Backend</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(4)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(4)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Implementar autenticação JWT</h3>
+                <h3 class="card-title">Implementar autenticação JWT</h3>
                 <p class="card-desc">Criar middleware de autenticação e refresh token automático.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">📅</span>
                     <time datetime="2026-06-04">04 Jun 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
 
               <article
@@ -424,20 +431,20 @@
                 aria-label="Tarefa: Refatorar componente de tabela"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-frontend">Frontend</span> -->
+                  <span class="card-tag tag-frontend">Frontend</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(5)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(5)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Refatorar componente de tabela</h3>
+                <h3 class="card-title">Refatorar componente de tabela</h3>
                 <p class="card-desc">Melhorar performance de renderização e adicionar ordenação por colunas.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">📅</span>
                     <time datetime="2026-06-03">03 Jun 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
             </div>
 
@@ -458,7 +465,7 @@
             <div class="col-header">
               <span class="col-dot dot-done" aria-hidden="true"></span>
               <h2 class="col-title">Concluído</h2>
-              <span class="col-count" id="count-concluido">0</span>
+              <span class="col-count" id="count-concluido">3</span>
             </div>
 
             <div class="cards-container" id="col-concluido">
@@ -471,20 +478,20 @@
                 aria-label="Tarefa concluída: Setup inicial do projeto"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-devops">DevOps</span> -->
+                  <span class="card-tag tag-devops">DevOps</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(6)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(6)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Setup inicial do projeto</h3>
+                <h3 class="card-title">Setup inicial do projeto</h3>
                 <p class="card-desc">Configurar repositório, estrutura de pastas e dependências base.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">✔</span>
                     <time datetime="2026-06-01">01 Jun 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
 
               <article
@@ -496,20 +503,20 @@
                 aria-label="Tarefa concluída: Design system definido"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-design">Design</span> -->
+                  <span class="card-tag tag-design">Design</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(7)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(7)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Design system definido</h3>
+                <h3 class="card-title">Design system definido</h3>
                 <p class="card-desc">Cores, tipografia e componentes base documentados no Figma.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">✔</span>
                     <time datetime="2026-05-30">30 Mai 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
 
               <article
@@ -521,20 +528,20 @@
                 aria-label="Tarefa concluída: Reunião de kick-off"
               >
                 <div class="card-header">
-                  <!-- <span class="card-tag tag-frontend">Frontend</span> -->
+                  <span class="card-tag tag-frontend">Frontend</span>
                   <div class="card-actions">
                     <button class="card-btn" onclick="editarTarefa(8)" aria-label="Editar tarefa">✎</button>
                     <button class="card-btn card-btn-danger" onclick="removerTarefa(8)" aria-label="Remover tarefa">✕</button>
                   </div>
                 </div>
-                <!-- <h3 class="card-title">Reunião de kick-off</h3>
+                <h3 class="card-title">Reunião de kick-off</h3>
                 <p class="card-desc">Alinhamento com a equipe sobre objetivos e cronograma do sprint.</p>
                 <div class="card-footer">
                   <span class="card-date">
                     <span aria-hidden="true">✔</span>
                     <time datetime="2026-05-28">28 Mai 2026</time>
                   </span>
-                </div> -->
+                </div>
               </article>
             </div>
 
@@ -557,19 +564,19 @@
         <div class="progress-section" aria-label="Progresso do projeto">
           <div class="progress-header">
             <span class="progress-title">Progresso geral</span>
-            <span class="progress-label" id="progress-label" aria-live="polite">0%</span>
+            <span class="progress-label" id="progress-label" aria-live="polite">37%</span>
           </div>
           <div
             class="progress-bar"
             role="progressbar"
-            aria-valuenow="0"
+            aria-valuenow="37"
             aria-valuemin="0"
             aria-valuemax="100"
-            aria-label="0% das tarefas concluídas"
+            aria-label="37% das tarefas concluídas"
           >
-            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            <div class="progress-fill" id="progress-fill" style="width: 37%"></div>
           </div>
-          <p class="progress-hint">0 de 0 tarefas concluídas</p>
+          <p class="progress-hint">3 de 8 tarefas concluídas</p>
         </div>
 
       </section>
@@ -874,14 +881,14 @@
             </select>
           </div>
         </div>
-        <!-- Aplicar futuramente as tags: <div class="form-group">
+        <div class="form-group">
           <label for="modal-tarefa-tag">Categoria</label>
           <select id="modal-tarefa-tag" class="form-input">
             <option value="frontend">Frontend</option>
             <option value="backend">Backend</option>
             <option value="design">Design</option>
             <option value="devops">DevOps</option>
-          </select> -->
+          </select>
         </div>
       </div>
       <div class="modal-footer">
