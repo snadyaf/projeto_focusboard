@@ -1,25 +1,74 @@
-// ======================================
-// LOGIN
-// ======================================
+
+//login 
+
+const usuarios = [
+  {
+    email: "miguel@email.com",
+    senha: "123456",
+  },
+  {
+    email: "snadya@email.com",
+    senha: "123456",
+  },
+  {
+    email: "sid@email.com",
+    senha: "123456",
+  },
+  {
+    email: "junior@email.com",
+    senha: "123456",
+  },
+];
 
 function validarLogin() {
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value.trim();
 
-  const emailCorreto = "teste@email.com";
-  const senhaCorreta = "123456";
+  const usuarioEncontrado = usuarios.find((usuario) => usuario.email === email &&  usuario.senha === senha);
 
-  if (email === emailCorreto && senha === senhaCorreta) {
-    document.getElementById("login-screen").remove();
+  if (usuarioEncontrado) {
+    
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuarioEncontrado));
 
-    const app = document.getElementById("app");
-
-    app.classList.remove("hidden");
-    app.style.display = "flex";
+    mostrarApp();
   } else {
     alert("Email ou senha inválidos.");
   }
 }
+
+function mostrarApp() {
+  const loginScreen = document.getElementById("login-screen");
+  const app = document.getElementById("app");
+
+  if (loginScreen) {
+    loginScreen.style.display = "none";
+  }
+
+  if (app) {
+    app.classList.remove("hidden");
+    app.style.display = "flex";
+  }
+}
+
+function fazerLogout() {
+  localStorage.removeItem("usuarioLogado");
+
+  document.getElementById("app").style.display = "none";
+
+  document.getElementById("login-screen").style.display = "flex";
+
+  document.getElementById("email").value = "";
+  document.getElementById("senha").value = "";
+}
+
+function verificarLogin() {
+  const usuarioLogado = localStorage.getItem("usuarioLogado");
+
+  if (usuarioLogado) {
+    mostrarApp();
+  }
+}
+
 
 // ======================================
 // NAVEGAÇÃO
@@ -325,6 +374,8 @@ function alternarTema() {
 // ======================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  verificarLogin();
+
   atualizarDisplay();
 
   atualizarContadores();
