@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FocusBoard — Organize seu dia</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js"></script>
 </head>
 <body>
 
@@ -75,7 +74,7 @@
       <!-- Perfil do usuário -->
       <div class="sidebar-profile">
         <div class="avatar" aria-hidden="true">AM</div>
-        <div class="profile-info">
+        <div class="profile-info sidebar-text">
           <span class="profile-name">Ana Martins</span>
           <span class="profile-role">Desenvolvedora Full Stack</span>
         </div>
@@ -99,7 +98,7 @@
               aria-current="page"
             >
               <span class="nav-icon" aria-hidden="true">▦</span>
-              <span>Tarefas</span>
+              <span class="sidebar-text">Tarefas</span>
             </button>
           </li>
           <li role="none">
@@ -110,7 +109,7 @@
               onclick="navegarPara('anotacoes')"
             >
               <span class="nav-icon" aria-hidden="true">✎</span>
-              <span>Anotações</span>
+              <span class="sidebar-text">Anotações</span>
             </button>
           </li>
           <li role="none">
@@ -121,7 +120,7 @@
               onclick="navegarPara('pomodoro')"
             >
               <span class="nav-icon" aria-hidden="true">◷</span>
-              <span>Pomodoro</span>
+              <span class="sidebar-text">Pomodoro</span>
             </button>
           </li>
           <li role="none">
@@ -132,7 +131,7 @@
               onclick="navegarPara('dashboard')"
             >
               <span class="nav-icon" aria-hidden="true">◈</span>
-              <span>Dashboard</span>
+              <span class="sidebar-text">Dashboard</span>
             </button>
           </li>
         </ul>
@@ -147,7 +146,7 @@
              - Atualizar botão ativo
         -->
         <div class="theme-selector" aria-label="Selecionar tema">
-          <span class="theme-label">Tema</span>
+          <span class="theme-label sidebar-text">Tema</span>
           <div class="theme-buttons">
             <button
               class="theme-btn active"
@@ -179,8 +178,8 @@
              - Exibir login-screen
              - Limpar dados de sessão se necessário
         -->
-        <button class="btn-logout" onclick="fazerLogout()" aria-label="Sair da conta">
-          <span aria-hidden="true">⎋</span> Sair
+        <button class="btn-logout" onclick="fazerLogout()" aria-label="Sair da conta">⏻
+          <span class="sidebar-text">Sair</span>
         </button>
       </div>
 
@@ -202,19 +201,27 @@
 
       <!-- Topbar -->
       <header class="topbar">
+
+        <!-- Botão menu -->
         <button
           id="menu-toggle"
           class="menu-toggle"
-          onclick="abrirSidebar()"
-          aria-label="Abrir menu"
-          aria-expanded="false"
-        >
-          <span></span><span></span><span></span>
+          onclick="alternarSidebar()"
+          aria-label="Ocultar menu"
+          >
+          ☰
         </button>
-        <div class="topbar-title" id="topbar-title">Tarefas</div>
-        <div class="topbar-actions">
-          <span class="topbar-date" id="topbar-date">Qua, 3 Jun 2026</span>
+
+        <div class="topbar-title" id="topbar-title">
+          Tarefas
         </div>
+
+        <div class="topbar-actions">
+          <span class="topbar-date" id="topbar-date">
+            Qua, 3 Jun 2026
+          </span>
+        </div>
+
       </header>
 
       <!-- ======================================================
@@ -250,8 +257,8 @@
           <select
             id="filtro-status"
             class="select-filter"
-            onchange="filtrarPorStatus(this.value)"
             aria-label="Filtrar por status"
+            onchange="filtrarTarefas()"
           >
             <option value="todos">Todos os status</option>
             <option value="afazer">A Fazer</option>
