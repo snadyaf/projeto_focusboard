@@ -1,73 +1,5 @@
-// =======================
-// LOCAL STORAGE - TAREFAS
-// =======================
 
-function salvarNoStorage() {
-  const tarefas = [];
-
-  document.querySelectorAll(".card").forEach((card) => {
-    tarefas.push({
-      id: card.dataset.id,
-      status: card.dataset.status,
-
-      titulo: card.querySelector(".card-title")?.textContent,
-
-      descricao: card.querySelector(".card-desc")?.textContent,
-
-      categoria: card
-        .querySelector(".card-tag")
-        ?.textContent.trim()
-        .toLowerCase(),
-
-      data: card.querySelector("time")?.getAttribute("datetime"),
-    });
-  });
-
-  localStorage.setItem("tarefas", JSON.stringify(tarefas));
-}
-
-function carregarTarefasStorage() {
-  const tarefasSalvas = JSON.parse(localStorage.getItem("tarefas"));
-
-  if (!tarefasSalvas) return;
-
-  // limpa array atual
-  tarefas.length = 0;
-
-  // limpa colunas
-  document.getElementById("col-afazer").innerHTML = "";
-  document.getElementById("col-fazendo").innerHTML = "";
-  document.getElementById("col-concluido").innerHTML = "";
-
-  tarefasSalvas.forEach((tarefa) => {
-    // mantém no array principal
-    tarefas.push({
-      id: Number(tarefa.id),
-      titulo: tarefa.titulo,
-      descricao: tarefa.descricao,
-      data: tarefa.data,
-      status: tarefa.status,
-      tag: tarefa.categoria,
-    });
-
-    // usa a mesma renderização
-    renderizarTarefa({
-      id: Number(tarefa.id),
-      titulo: tarefa.titulo,
-      descricao: tarefa.descricao,
-      data: tarefa.data,
-      status: tarefa.status,
-      tag: tarefa.categoria,
-    });
-  });
-
-  atualizarContadores();
-  atualizarProgresso();
-}
-
-// ======================================
-// LOGIN
-// ======================================
+//login 
 
 const usuarios = [
   {
@@ -118,6 +50,26 @@ function mostrarApp() {
   }
 }
 
+function fazerLogout() {
+  localStorage.removeItem("usuarioLogado");
+
+  document.getElementById("app").style.display = "none";
+
+  document.getElementById("login-screen").style.display = "flex";
+
+  document.getElementById("email").value = "";
+  document.getElementById("senha").value = "";
+}
+
+function verificarLogin() {
+  const usuarioLogado = localStorage.getItem("usuarioLogado");
+
+  if (usuarioLogado) {
+    mostrarApp();
+  }
+}
+
+
 // ======================================
 // NAVEGAÇÃO
 // ======================================
@@ -158,7 +110,7 @@ function atualizarDisplay() {
   const segundos = tempo % 60;
 
   document.getElementById("timer-display").textContent = `${String(
-    minutos,
+    minutos
   ).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
 }
 
@@ -215,7 +167,6 @@ function selecionarModoPomodoro(modo) {
 // ======================================
 
 const tarefas = [];
-let tarefaEditando = null;
 
 function abrirModalNovaTarefa() {
   document.getElementById("modal-tarefa").classList.remove("hidden");
@@ -240,46 +191,9 @@ function salvarTarefa() {
     tag: document.getElementById("modal-tarefa-tag").value,
   };
 
-  if (tarefaEditando !== null) {
-    // procura a tarefa dentro do array
-    const tarefaExistente = tarefas.find(
-      (tarefa) => tarefa.id === tarefaEditando,
-    );
+  tarefas.push(tarefa);
 
-    // atualiza os dados
-    tarefaExistente.titulo = document.getElementById(
-      "modal-tarefa-titulo",
-    ).value;
-
-    tarefaExistente.descricao =
-      document.getElementById("modal-tarefa-desc").value;
-
-    tarefaExistente.data = document.getElementById("modal-tarefa-data").value;
-
-    tarefaExistente.status = document.getElementById(
-      "modal-tarefa-status",
-    ).value;
-
-    tarefaExistente.tag = document.getElementById("modal-tarefa-tag").value;
-
-    // encontra o card antigo na tela
-    const cardAntigo = document.querySelector(`[data-id="${tarefaEditando}"]`);
-
-    // remove o card antigo
-    if (cardAntigo) {
-      cardAntigo.remove();
-    }
-
-    // desenha novamente o card atualizado
-    renderizarTarefa(tarefaExistente);
-
-    // encerra modo edição
-    tarefaEditando = null;
-  } else {
-    tarefas.push(tarefa);
-
-    renderizarTarefa(tarefa);
-  }
+  renderizarTarefa(tarefa);
 
   atualizarContadores();
 
@@ -288,10 +202,6 @@ function salvarTarefa() {
   limparFormulario();
 
   fecharModalNovaTarefa();
-
-  salvarNoStorage();
-
-  fecharModal();
 }
 
 function limparFormulario() {
@@ -320,7 +230,7 @@ function renderizarTarefa(tarefa) {
   card.innerHTML = `
 <div class="card-header">
 
-<span class="card-tag tag-${tarefa.tag.toLowerCase()}">
+<span class="card-tag">
 ${tarefa.tag}
 </span>
 
@@ -329,13 +239,17 @@ ${tarefa.tag}
 <button
 class="card-btn"
 onclick="editarTarefa(${tarefa.id})">
+
 ✎
+
 </button>
 
 <button
 class="card-btn card-btn-danger"
 onclick="removerTarefa(${tarefa.id})">
+
 ✕
+
 </button>
 
 </div>
@@ -352,22 +266,12 @@ ${tarefa.descricao}
 
 <div class="card-footer">
 
-<span class="card-date">
-
-${tarefa.status === "concluido" ? "✔" : "📅"}
-
-<time datetime="${tarefa.data}">
+<time>
 ${tarefa.data}
 </time>
 
-</span>
-
 </div>
 `;
-
-  if (tarefa.status === "concluido") {
-    card.classList.add("card-concluido");
-  }
 
   card.addEventListener("dragstart", arrastarTarefa);
 
@@ -387,16 +291,7 @@ function removerTarefa(id) {
 }
 
 function editarTarefa(id) {
-  const tarefa = tarefas.find((tarefa) => tarefa.id === id);
-  document.getElementById("modal-tarefa-titulo").value = tarefa.titulo;
-  document.getElementById("modal-tarefa-desc").value = tarefa.descricao;
-  document.getElementById("modal-tarefa-data").value = tarefa.data;
-  document.getElementById("modal-tarefa-status").value = tarefa.status;
-  document.getElementById("modal-tarefa-tag").value = tarefa.tag;
-
-  abrirModalNovaTarefa();
-
-  tarefaEditando = tarefa.id;
+  alert(`Editar tarefa ${id}`);
 }
 
 function arrastarTarefa(event) {
@@ -413,28 +308,16 @@ function soltarTarefa(event, novoStatus) {
   if (card) {
     card.dataset.status = novoStatus;
 
-    // aplica/remover efeito concluído
-    if (novoStatus === "concluido") {
-      card.classList.add("card-concluido");
-    } else {
-      card.classList.remove("card-concluido");
-    }
-
-    // atualiza array
-    const tarefa = tarefas.find((t) => t.id == id);
-
-    if (tarefa) {
-      tarefa.status = novoStatus;
-    }
-
     document.getElementById(`col-${novoStatus}`).appendChild(card);
 
     atualizarContadores();
 
     atualizarProgresso();
-
-    salvarNoStorage();
   }
+}
+
+function permitirDrop(event) {
+  event.preventDefault();
 }
 
 // ======================================
@@ -452,7 +335,7 @@ function atualizarProgresso() {
   const total = document.querySelectorAll(".card").length;
 
   const concluidas = document.querySelectorAll(
-    '.card[data-status="concluido"]',
+    '.card[data-status="concluido"]'
   ).length;
 
   const percentual = total ? Math.round((concluidas / total) * 100) : 0;
@@ -491,6 +374,8 @@ function alternarTema() {
 // ======================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  verificarLogin();
+
   atualizarDisplay();
 
   atualizarContadores();
@@ -498,74 +383,4 @@ document.addEventListener("DOMContentLoaded", () => {
   atualizarProgresso();
 
   trocarTema(localStorage.getItem("tema") || "dark");
-});
-
-function fazerLogout() {
-  const app = document.getElementById("app");
-  const login = document.getElementById("login-screen");
-  app.classList.add("hidden");
-  login.classList.remove("hidden");
-
-  document.getElementById("email").value = "";
-  document.getElementById("senha").value = "";
-
-  localStorage.clear();
-
-  sessionStorage.clear();
-
-  location.reload();
-}
-function alternarSidebar() {
-  const sidebar = document.querySelector(".sidebar");
-
-  if (window.innerWidth <= 768) {
-    sidebar.classList.toggle("aberta");
-  } else {
-    sidebar.classList.toggle("sidebar-fechada");
-  }
-}
-
-function fecharModal() {
-  const modal = document.getElementById("modal-tarefa");
-
-  modal.classList.add("hidden");
-
-  // limpar campos do formulário
-  document.getElementById("modal-tarefa-titulo").value = "";
-  document.getElementById("modal-tarefa-desc").value = "";
-  document.getElementById("modal-tarefa-data").value = "";
-  document.getElementById("modal-tarefa-status").value = "afazer";
-  document.getElementById("modal-tarefa-tag").value = "frontend";
-}
-
-function filtrarTarefas() {
-  const texto = document.getElementById("pesquisa-tarefa").value.toLowerCase();
-
-  const status = document.getElementById("filtro-status").value;
-
-  document.querySelectorAll(".kanban-col").forEach((coluna) => {
-    const statusColuna = coluna.dataset.status;
-
-    const statusOk = status === "todos" || status === statusColuna;
-
-    let existeCard = false;
-
-    coluna.querySelectorAll(".card").forEach((card) => {
-      const conteudo = card.innerText.toLowerCase();
-
-      const textoOk = conteudo.includes(texto);
-
-      const mostrar = statusOk && textoOk;
-
-      card.style.display = mostrar ? "" : "none";
-
-      if (mostrar) existeCard = true;
-    });
-
-    coluna.style.display = existeCard ? "" : "none";
-  });
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  carregarTarefasStorage();
 });
