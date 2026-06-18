@@ -66,6 +66,20 @@ function carregarTarefasStorage() {
   atualizarDashboard();
 }
 
+// data do topbar 
+
+const data = new Date();
+
+const dataTopbar = data.toLocaleDateString ('pt-BR', {
+ 
+  weekday: 'long', 
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+
+document.getElementById('topbar-date').textContent = dataTopbar;  
+
 // ======================================
 // LOGIN
 // ======================================
