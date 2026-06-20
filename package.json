@@ -1,0 +1,24 @@
+{
+  "name": "projeto_focusboard",
+  "version": "1.0.0",
+  "description": "Versão: 1.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snadyaf/projeto_focusboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/snadyaf/projeto_focusboard/issues"
+  },
+  "homepage": "https://github.com/snadyaf/projeto_focusboard#readme",
+  "devDependencies": {
+    "cypress": "^15.17.0"
+  }
+}
